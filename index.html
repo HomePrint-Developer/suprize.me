@@ -4,12 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Semoga Bermanfaat — Suprize.me</title>
+    <title>Hihu! — Anak TI</title>
 
     <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Load Google Font: Plus Jakarta Sans & Inter -->
+    <!-- Load Google Font: Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
@@ -33,8 +33,28 @@
             }
         }
 
+        @keyframes wiggle {
+
+            0%,
+            100% {
+                transform: rotate(0deg);
+            }
+
+            25% {
+                transform: rotate(-6deg);
+            }
+
+            75% {
+                transform: rotate(6deg);
+            }
+        }
+
         .animate-float {
             animation: float 3.5s ease-in-out infinite;
+        }
+
+        .animate-wiggle {
+            animation: wiggle 0.4s ease-in-out infinite;
         }
     </style>
 </head>
@@ -46,7 +66,7 @@
         class="bg-white/95 backdrop-blur-sm rounded-3xl shadow-[0_12px_40px_rgb(0,0,0,0.06)] p-8 sm:p-10 max-w-md w-full text-center border border-orange-100/80 transition-all duration-300 hover:shadow-[0_16px_45px_rgb(238,77,45,0.08)]">
 
         <!-- Ikon Kado / Hadiah dengan animasi halus -->
-        <div
+        <div id="giftIcon"
             class="animate-float mx-auto mb-6 inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-50 to-orange-100/80 text-[#ee4d2d] shadow-inner">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor">
@@ -57,39 +77,80 @@
 
         <!-- Judul Utama -->
         <h1 class="text-2xl font-bold text-gray-900 tracking-tight mb-3">
-            Semoga Bermanfaat!
+            Hihu!
         </h1>
-
-        <!-- Pesan Utama -->
-        <p class="text-gray-600 text-[0.98rem] leading-relaxed mb-6">
-            Ini barangnya! Di bawah ini link Shopee-nya ya, semoga bermanfaat dan suka.
-        </p>
 
         <!-- Badge Pengirim -->
         <div class="mb-8">
             <span
                 class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-orange-50 text-[#ee4d2d] border border-orange-100">
-                <span class="w-1.5 h-1.5 rounded-full bg-[#ee4d2d]"></span>
-                Dari : Anak TI
+                Dari : Anak IT yang Gabut
             </span>
         </div>
 
-        <!-- Tombol Link Shopee -->
-        <a href="https://id.shp.ee/ToeX5Cw2" target="_blank" rel="noopener noreferrer"
-            class="group relative inline-flex items-center justify-center w-full bg-[#ee4d2d] hover:bg-[#d73f22] active:scale-[0.99] text-white font-semibold py-3.5 px-6 rounded-xl shadow-[0_6px_20px_rgba(238,77,45,0.28)] hover:shadow-[0_8px_25px_rgba(238,77,45,0.38)] transition-all duration-200 transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#ee4d2d]">
-            <span>Link Shopee</span>
+        <!-- Audio Element -->
+        <audio id="catAudio" src="kucing-ketawa.mp3" preload="auto"></audio>
 
-            <!-- Ikon Panah -->
-            <svg xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5 ml-2 transition-transform duration-200 group-hover:translate-x-1" viewBox="0 0 20 20"
+        <!-- Tombol Play Suara -->
+        <button id="playBtn" type="button"
+            class="group relative inline-flex items-center justify-center w-full bg-[#ee4d2d] hover:bg-[#d73f22] active:scale-[0.99] text-white font-semibold py-3.5 px-6 rounded-xl shadow-[0_6px_20px_rgba(238,77,45,0.28)] hover:shadow-[0_8px_25px_rgba(238,77,45,0.38)] transition-all duration-200 transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#ee4d2d]">
+
+            <!-- Ikon Play -->
+            <svg id="playIcon" xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5 mr-2 transition-transform duration-200 group-hover:scale-110" viewBox="0 0 20 20"
                 fill="currentColor">
                 <path fill-rule="evenodd"
-                    d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
                     clip-rule="evenodd" />
             </svg>
-        </a>
+
+            <!-- Ikon Pause (Sembunyi secara default) -->
+            <svg id="pauseIcon" xmlns="http://www.w3.org/2000/svg" class="hidden h-5 w-5 mr-2" viewBox="0 0 20 20"
+                fill="currentColor">
+                <path fill-rule="evenodd"
+                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z"
+                    clip-rule="evenodd" />
+            </svg>
+
+            <span id="btnText">Buka Kejutan</span>
+        </button>
 
     </div>
+
+    <!-- Script Kontrol Audio -->
+    <script>
+        const playBtn = document.getElementById('playBtn');
+        const catAudio = document.getElementById('catAudio');
+        const playIcon = document.getElementById('playIcon');
+        const pauseIcon = document.getElementById('pauseIcon');
+        const btnText = document.getElementById('btnText');
+        const giftIcon = document.getElementById('giftIcon');
+
+        playBtn.addEventListener('click', () => {
+            if (catAudio.paused) {
+                catAudio.play();
+                playIcon.classList.add('hidden');
+                pauseIcon.classList.remove('hidden');
+                btnText.textContent = 'Hentikan Suara';
+                giftIcon.classList.remove('animate-float');
+                giftIcon.classList.add('animate-wiggle');
+            } else {
+                catAudio.pause();
+                catAudio.currentTime = 0;
+                resetState();
+            }
+        });
+
+        catAudio.addEventListener('ended', resetState);
+
+        function resetState() {
+            playIcon.classList.remove('hidden');
+            pauseIcon.classList.add('hidden');
+            btnText.textContent = 'Buka Kejutan';
+            giftIcon.classList.remove('animate-wiggle');
+            giftIcon.classList.add('animate-float');
+        }
+    </script>
 
 </body>
 
